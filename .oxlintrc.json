@@ -35,6 +35,18 @@
       {
         "allow": ["**/*.css"]
       }
+    ],
+    "no-underscore-dangle": [
+      "warn",
+      {
+        "allow": ["_tag"]
+      }
+    ],
+    "react/style-prop-object": [
+      "warn",
+      {
+        "allow": ["StatusBar"]
+      }
     ]
   },
   "ignorePatterns": [
