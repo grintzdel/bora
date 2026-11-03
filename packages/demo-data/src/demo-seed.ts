@@ -255,6 +255,14 @@ export const demoSeed: DemoSeed = {
         'Redescends lentement sans laisser tomber la charge.',
       ],
     },
+    {
+      id: 'machine-15',
+      number: '15',
+      name: 'Poulie vis-à-vis',
+      zone: 'zone guidée',
+      videoSeconds: 20,
+      steps: [],
+    },
   ],
   programs: [
     {
