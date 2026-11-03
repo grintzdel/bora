@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect } from 'react'
 
+import { AppProviders } from '@/modules/app/AppProviders'
 import { useBoraFonts } from '@/modules/shared/ui/hooks/use-bora-fonts'
 import { useTheme } from '@/modules/shared/ui/hooks/use-theme'
 
@@ -20,9 +21,12 @@ export default function RootLayout() {
   if (!ready) return null
 
   return (
-    <>
+    <AppProviders>
       <StatusBar style={scheme === ColorScheme.DARK ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface100 } }} />
-    </>
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface100 } }}>
+        <Stack.Screen name="machine/[machineId]" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="report" options={{ presentation: 'modal' }} />
+      </Stack>
+    </AppProviders>
   )
 }

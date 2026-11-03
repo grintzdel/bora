@@ -43,7 +43,8 @@ apps/
 ├── admin/                Next.js (App Router, Tailwind v4) : espace salle pour les gérants
 └── mobile/               Expo (Expo Router) : app débutant
 packages/
-└── design-tokens/        Tokens de la DA, source unique pour toutes les apps
+├── design-tokens/        Tokens de la DA, source unique pour toutes les apps
+└── demo-data/            Données de démo (salle, duos, séances, machines) partagées par l'app et l'admin
 ```
 
 ### Design tokens
