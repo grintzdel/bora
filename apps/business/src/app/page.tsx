@@ -1,8 +1,23 @@
+import { CalculatorSection } from '@/modules/landing/ui/components/calculator-section'
+import { FaqSection } from '@/modules/landing/ui/components/faq-section'
+import { HeroSection } from '@/modules/landing/ui/components/hero-section'
+import { OfferSection } from '@/modules/landing/ui/components/offer-section'
+import { PilotSection } from '@/modules/landing/ui/components/pilot-section'
+import { SiteFooter } from '@/modules/landing/ui/components/site-footer'
+import { StatsSection } from '@/modules/landing/ui/components/stats-section'
+
 export default function HomePage() {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-4 px-5">
-      <h1 className="font-display text-display text-ink">Bora pour les salles</h1>
-      <p className="text-ink-muted">Vos nouveaux inscrits viennent à deux, et ils restent.</p>
-    </main>
+    <>
+      <HeroSection />
+      <main id="contenu">
+        <StatsSection />
+        <CalculatorSection />
+        <OfferSection />
+        <FaqSection />
+        <PilotSection />
+      </main>
+      <SiteFooter />
+    </>
   )
 }

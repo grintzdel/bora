@@ -4,9 +4,31 @@
 @theme inline {
   --font-display: var(--font-bricolage-grotesque), system-ui, sans-serif;
   --font-text: var(--font-figtree), system-ui, sans-serif;
+  --text-hero: clamp(2.75rem, 1.1rem + 5vw, 4.5rem);
+  --text-hero--line-height: 1.05em;
+  --text-hero--letter-spacing: -0.045em;
+  --text-hero--font-weight: 800;
+  --text-section: clamp(1.75rem, 1rem + 2.2vw, 2.5rem);
+  --text-section--line-height: 1.15em;
+  --text-section--letter-spacing: -0.03em;
+  --text-section--font-weight: 800;
 }
 
-body {
-  background: var(--color-surface-100);
-  color: var(--color-ink);
+html {
+  color-scheme: light;
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+details[open] .faq-chevron {
+  transform: rotate(90deg);
+}
+
+summary {
+  list-style: none;
 }

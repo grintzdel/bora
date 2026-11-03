@@ -16,14 +16,30 @@ const figtree = Figtree({
 })
 
 export const metadata: Metadata = {
-  title: 'Bora pour les salles',
-  description: 'Gardez vos nouveaux inscrits : Bora leur trouve un duo de leur niveau dans votre salle.',
+  title: {
+    default: 'Bora pour les salles — Vos nouveaux viennent à deux',
+    template: '%s · Bora pour les salles',
+  },
+  description:
+    'Bora met chaque nouvel inscrit en duo avec un débutant de votre salle, leur donne un programme guidé, et vous montre combien restent grâce à eux.',
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="fr" className={`${bricolageGrotesque.variable} ${figtree.variable} h-full antialiased`}>
-      <body className="font-text text-body flex min-h-full flex-col">{children}</body>
+    <html
+      lang="fr"
+      data-theme="light"
+      className={`${bricolageGrotesque.variable} ${figtree.variable} h-full scroll-smooth antialiased`}
+    >
+      <body className="font-text text-body bg-surface-100 text-ink flex min-h-full flex-col">
+        <a
+          href="#contenu"
+          className="focus:rounded-pill focus:bg-lime focus:text-on-lime sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2"
+        >
+          Aller au contenu
+        </a>
+        {children}
+      </body>
     </html>
   )
 }
