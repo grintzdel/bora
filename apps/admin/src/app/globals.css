@@ -10,3 +10,41 @@ body {
   background: var(--color-surface-100);
   color: var(--color-ink);
 }
+
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  * {
+    print-color-adjust: exact;
+  }
+
+  :root:root:root {
+    --color-surface-000: #fbf8ff;
+    --color-surface-100: #f4f0fc;
+    --color-surface-200: #eee8fb;
+    --color-surface-inverse: #2a1e4a;
+    --color-ink: #2a1e4a;
+    --color-ink-muted: #5b5175;
+    --color-ink-subtle: #6e6489;
+    --color-ink-inverse: #f4f0fc;
+    --color-line: #d9d0f2;
+    --color-line-strong: #8e80b8;
+    --color-brand: #6b3fd6;
+    --color-on-brand: #ffffff;
+    --color-brand-soft: #e4dafb;
+    --color-lime: #c8f169;
+    --color-on-lime: #2a1e4a;
+    --color-focus: #6b3fd6;
+    --color-success: #3e6a12;
+    --color-success-surface: #e7f9be;
+    --color-warning: #8a5a00;
+    --color-warning-surface: #fdf0cf;
+    --color-danger: #b3261e;
+    --color-on-danger: #ffffff;
+    --color-danger-surface: #fce6e3;
+    --color-scrim: rgba(42, 30, 74, 0.48);
+  }
+}

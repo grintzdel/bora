@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/demo-seed.ts"
+    ".": "./src/demo-seed.ts",
+    "./gym-space": "./src/gym-space-seed.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
