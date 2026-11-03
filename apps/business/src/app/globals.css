@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+@import '@bora/design-tokens/tokens.css';
+
+@theme inline {
+  --font-display: var(--font-bricolage-grotesque), system-ui, sans-serif;
+  --font-text: var(--font-figtree), system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-surface-100);
+  color: var(--color-ink);
+}

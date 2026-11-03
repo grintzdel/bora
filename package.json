@@ -2,7 +2,10 @@
   "name": "bora",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter web dev",
+    "dev": "pnpm --parallel --filter marketing-members --filter business --filter admin dev",
+    "dev:marketing-members": "pnpm --filter marketing-members dev",
+    "dev:business": "pnpm --filter business dev",
+    "dev:admin": "pnpm --filter admin dev",
     "dev:mobile": "pnpm --filter mobile start",
     "build": "pnpm -r build",
     "test": "pnpm -r test",

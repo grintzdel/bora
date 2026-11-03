@@ -1,6 +1,6 @@
 pnpm-lock.yaml
-apps/web/next-env.d.ts
-apps/web/.next/
+apps/*/next-env.d.ts
+apps/*/.next/
 apps/mobile/.expo/
 apps/mobile/expo-env.d.ts
 apps/mobile/assets/
