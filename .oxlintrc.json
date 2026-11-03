@@ -1,0 +1,60 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "react", "jsx-a11y", "import"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "unicorn/filename-case": [
+      "error",
+      {
+        "cases": {
+          "kebabCase": true,
+          "pascalCase": false
+        },
+        "ignore": ["\\.tsx?$"]
+      }
+    ],
+    "no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "^(I[A-Z]|.*Gateway|.*Port)"
+      }
+    ],
+    "typescript/no-explicit-any": "error",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
+    "react/react-in-jsx-scope": "off",
+    "import/no-unassigned-import": [
+      "warn",
+      {
+        "allow": ["**/*.css"]
+      }
+    ]
+  },
+  "ignorePatterns": [
+    "*.js",
+    "node_modules/",
+    "*.json",
+    "*.md",
+    "*.css",
+    "**/.next/",
+    "**/.expo/",
+    "**/next-env.d.ts",
+    "**/expo-env.d.ts"
+  ],
+  "overrides": [
+    {
+      "files": ["*.port.ts"],
+      "rules": {
+        "no-unused-vars": "off",
+        "typescript/no-unused-vars": "off"
+      }
+    }
+  ]
+}

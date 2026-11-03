@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+apps/web/next-env.d.ts
+apps/web/.next/
+apps/mobile/.expo/
+apps/mobile/expo-env.d.ts
+apps/mobile/assets/
+packages/design-tokens/src/tokens.css
