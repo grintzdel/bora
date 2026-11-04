@@ -12,7 +12,12 @@ import { SectionTitle } from '@/modules/shared/ui/components/SectionTitle'
 
 export const MachinesPage = () => {
   const machines = useMachines()
-  const form = useMachineForm({ target: machines.editing, zoneNames: machines.zoneNames, onSaved: machines.showSaved })
+  const form = useMachineForm({
+    target: machines.editing,
+    zoneNames: machines.zoneNames,
+    onSaved: machines.showSaved,
+    onDeleted: machines.closeEditor,
+  })
 
   return (
     <>
@@ -102,6 +107,7 @@ export const MachinesPage = () => {
             zoneNames={form.zoneNames}
             usages={form.usages}
             qr={form.qr}
+            deletion={form.deletion}
             preview={form.preview}
             onNameChange={form.setName}
             onNumberChange={form.setNumber}
@@ -113,6 +119,9 @@ export const MachinesPage = () => {
             onSubmit={() => void form.submit()}
             onPrintQr={() => (form.qr ? machines.printOne(form.qr.id) : undefined)}
             onClose={machines.closeEditor}
+            onAskDelete={form.askDelete}
+            onCancelDelete={form.cancelDelete}
+            onConfirmDelete={() => void form.confirmDelete()}
           />
         ) : null}
       </div>

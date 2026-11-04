@@ -19,6 +19,7 @@ type GymSpaceShellProps = {
   readonly menuOpen: boolean
   readonly onToggleMenu: () => void
   readonly onSignOut: () => void
+  readonly onResetDemo: () => void
   readonly children: ReactNode
 }
 
@@ -59,7 +60,11 @@ const Brand = ({ gymName }: { readonly gymName: string | null }) => (
   </div>
 )
 
-const SignOut = ({ managerName, onSignOut }: Pick<GymSpaceShellProps, 'managerName' | 'onSignOut'>) => (
+const SignOut = ({
+  managerName,
+  onSignOut,
+  onResetDemo,
+}: Pick<GymSpaceShellProps, 'managerName' | 'onSignOut' | 'onResetDemo'>) => (
   <div className="flex flex-col gap-1 px-3">
     {managerName ? <span className="text-caption text-ink-muted">Connectée : {managerName}</span> : null}
     <Link
@@ -70,6 +75,13 @@ const SignOut = ({ managerName, onSignOut }: Pick<GymSpaceShellProps, 'managerNa
       <Icon name="logout" />
       Se déconnecter
     </Link>
+    <button
+      type="button"
+      onClick={onResetDemo}
+      className="min-h-tap-min text-caption text-ink-muted hover:text-ink focus-visible:outline-focus inline-flex cursor-pointer items-center border-0 bg-transparent p-0 text-left focus-visible:outline-2 focus-visible:outline-offset-2"
+    >
+      Réinitialiser la démo
+    </button>
   </div>
 )
 
@@ -80,6 +92,7 @@ export const GymSpaceShell = ({
   menuOpen,
   onToggleMenu,
   onSignOut,
+  onResetDemo,
   children,
 }: GymSpaceShellProps) => {
   const reports = items.find((item) => item.badge)
@@ -127,7 +140,7 @@ export const GymSpaceShell = ({
         {menuOpen ? (
           <nav id="menu-mobile" aria-label="Menu de l'espace salle" className="flex flex-col gap-4 pt-4 pb-2">
             <NavLinks items={items} />
-            <SignOut managerName={managerName} onSignOut={onSignOut} />
+            <SignOut managerName={managerName} onSignOut={onSignOut} onResetDemo={onResetDemo} />
           </nav>
         ) : null}
       </header>
@@ -142,7 +155,7 @@ export const GymSpaceShell = ({
         <div className="grow">
           <NavLinks items={items} />
         </div>
-        <SignOut managerName={managerName} onSignOut={onSignOut} />
+        <SignOut managerName={managerName} onSignOut={onSignOut} onResetDemo={onResetDemo} />
       </nav>
 
       <main

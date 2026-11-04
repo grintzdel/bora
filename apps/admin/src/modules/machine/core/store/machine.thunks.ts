@@ -9,6 +9,10 @@ export const saveMachineThunk = createEffectThunk('machine/save', (draft: Machin
   gateways.machine.save(draft)
 )
 
+export const deleteMachineThunk = createEffectThunk('machine/delete', (machineId: string, { gateways }) =>
+  gateways.machine.delete(machineId)
+)
+
 export const fetchQrSheetThunk = createEffectThunk(
   'machine/fetchQrSheet',
   (machineIds: ReadonlyArray<string> | null, { gateways }) => gateways.machine.getQrSheet(machineIds)

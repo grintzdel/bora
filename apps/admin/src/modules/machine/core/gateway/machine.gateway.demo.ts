@@ -93,6 +93,19 @@ export const makeMachineDemoGateway = (db: DemoDatabase, { latencyMs }: DemoGate
       return Effect.succeed(existing)
     })
 
+  const remove = (machineId: string) =>
+    Effect.suspend((): Effect.Effect<string, MachineNotFoundError> => {
+      if (!db.state.app.machines.some((machine) => machine.id === machineId)) {
+        return Effect.fail(new MachineNotFoundError({ machineId }))
+      }
+      db.state.app.machines = db.state.app.machines.filter((machine) => machine.id !== machineId)
+      delete db.state.space.machineStatus[machineId]
+      for (const exercise of db.state.app.programs.flatMap((program) => program.exercises)) {
+        if (exercise.machineId === machineId) exercise.machineId = null
+      }
+      return Effect.succeed(machineId)
+    })
+
   return {
     list: () =>
       simulateNetwork(latencyMs).pipe(Effect.andThen(() => Schema.decodeUnknown(MachinesOverviewSchema)(overview()))),
@@ -102,6 +115,7 @@ export const makeMachineDemoGateway = (db: DemoDatabase, { latencyMs }: DemoGate
         Effect.andThen(persist),
         Effect.andThen((machine) => Schema.decodeUnknown(MachineSchema)(toMachine(machine)))
       ),
+    delete: (machineId) => simulateNetwork(latencyMs).pipe(Effect.andThen(() => remove(machineId))),
     getQrSheet: (machineIds) =>
       simulateNetwork(latencyMs).pipe(
         Effect.andThen(() =>

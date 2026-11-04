@@ -8,5 +8,6 @@ import type { Machine, MachinesOverview, QrSheet } from '../domain/machine.domai
 export type MachineGateway = {
   readonly list: () => Effect.Effect<MachinesOverview, ParseError>
   readonly save: (input: unknown) => Effect.Effect<Machine, ParseError | MachineNumberTakenError | MachineNotFoundError>
+  readonly delete: (machineId: string) => Effect.Effect<string, MachineNotFoundError>
   readonly getQrSheet: (machineIds: ReadonlyArray<string> | null) => Effect.Effect<QrSheet, ParseError>
 }
