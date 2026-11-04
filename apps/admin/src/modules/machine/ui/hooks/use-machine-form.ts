@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { draftErrors, type Machine, type MachineDraft } from '../../core/domain/machine.domain-model'
-import { selectMachineSave } from '../../core/store/machine.selectors'
-import { saveMachineThunk } from '../../core/store/machine.thunks'
-import { formatSaveError } from '../format/machine-labels'
+import { selectMachineDelete, selectMachineSave } from '../../core/store/machine.selectors'
+import { deleteMachineThunk, saveMachineThunk } from '../../core/store/machine.thunks'
+import { describeMachineDeletion, formatSaveError } from '../format/machine-labels'
 import type { MachineEditorTarget } from './use-machines'
 
 const DEFAULT_VIDEO_SECONDS = 20
@@ -25,21 +25,25 @@ type MachineFormOptions = {
   readonly target: MachineEditorTarget | null
   readonly zoneNames: ReadonlyArray<string>
   readonly onSaved: (machineId: string) => void
+  readonly onDeleted: () => void
 }
 
-export const useMachineForm = ({ target, zoneNames, onSaved }: MachineFormOptions) => {
+export const useMachineForm = ({ target, zoneNames, onSaved, onDeleted }: MachineFormOptions) => {
   const dispatch = useAppDispatch()
   const save = useAppSelector(selectMachineSave)
+  const remove = useAppSelector(selectMachineDelete)
   const key = target?.key ?? null
   const machine = target?.machine ?? null
   const [draftKey, setDraftKey] = useState(key)
   const [draft, setDraft] = useState(() => toDraft(machine, zoneNames))
   const [submitted, setSubmitted] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   if (key !== draftKey) {
     setDraftKey(key)
     setDraft(toDraft(machine, zoneNames))
     setSubmitted(false)
+    setConfirmingDelete(false)
   }
 
   const serverError = save.error ? formatSaveError(save.error._tag) : null
@@ -66,6 +70,14 @@ export const useMachineForm = ({ target, zoneNames, onSaved }: MachineFormOption
     zoneNames,
     qr: machine ? { id: machine.id, value: machine.qrValue, label: `QR code de la machine ${machine.number}` } : null,
     usages: machine?.usages ?? [],
+    deletion: machine
+      ? {
+          isConfirming: confirmingDelete,
+          isDeleting: remove.isLoading,
+          warning: describeMachineDeletion(machine.usages),
+          error: remove.error ? "La suppression n'a pas abouti. Réessayez." : null,
+        }
+      : null,
     preview: {
       tag: `Machine ${draft.number.trim() || '··'} · ${draft.zone}`,
       name: draft.name.trim() || 'Nom de la machine',
@@ -80,6 +92,13 @@ export const useMachineForm = ({ target, zoneNames, onSaved }: MachineFormOption
       update({ steps: draft.steps.map((step, position) => (position === index ? value : step)) }),
     addStep: () => update({ steps: [...draft.steps, ''] }),
     removeStep: (index: number) => update({ steps: draft.steps.filter((_, position) => position !== index) }),
+    askDelete: () => setConfirmingDelete(true),
+    cancelDelete: () => setConfirmingDelete(false),
+    confirmDelete: async () => {
+      if (!machine) return
+      const result = await dispatch(deleteMachineThunk(machine.id))
+      if (deleteMachineThunk.fulfilled.match(result)) onDeleted()
+    },
     submit: async () => {
       setSubmitted(true)
       if (Object.keys(draftErrors(draft)).length > 0) return

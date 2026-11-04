@@ -1,4 +1,5 @@
 import { makeAuthDemoGateway } from '../auth/core/gateway/auth.gateway.demo'
+import { makeDemoControlGateway } from '../demo/core/gateway/demo-control.gateway.demo'
 import { makeGymDemoGateway } from '../gym/core/gateway/gym.gateway.demo'
 import { makeInvitationDemoGateway } from '../invitation/core/gateway/invitation.gateway.demo'
 import { makeMachineDemoGateway } from '../machine/core/gateway/machine.gateway.demo'
@@ -26,6 +27,7 @@ export const makeDemoExtra = ({
       machine: makeMachineDemoGateway(db, options),
       safety: makeSafetyDemoGateway(db, options),
       invitation: makeInvitationDemoGateway(db, options),
+      demo: makeDemoControlGateway(db),
     },
   }
 }

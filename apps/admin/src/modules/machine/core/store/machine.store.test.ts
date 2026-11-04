@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { makeTestStore } from '../../../app/__tests__/make-test-store'
 import { selectMachinesOverview, selectQrSheet, selectQrSheetSelection } from './machine.selectors'
 import { qrSheetSelected } from './machine.slice'
-import { fetchMachinesThunk, fetchQrSheetThunk, saveMachineThunk } from './machine.thunks'
+import { deleteMachineThunk, fetchMachinesThunk, fetchQrSheetThunk, saveMachineThunk } from './machine.thunks'
 
 describe('machine store', () => {
   it('loads the machines overview', async () => {
@@ -54,6 +54,29 @@ describe('machine store', () => {
     )
 
     expect(store.getState().machine.save.error?._tag).toBe('MachineNumberTakenError')
+  })
+
+  it('refreshes the overview once a machine is deleted', async () => {
+    const { store } = makeTestStore()
+    await store.dispatch(fetchMachinesThunk())
+
+    await store.dispatch(deleteMachineThunk('machine-15'))
+
+    await expect
+      .poll(() =>
+        selectMachinesOverview(store.getState())
+          .data?.zones.flatMap((zone) => zone.machines)
+          .some((machine) => machine.id === 'machine-15')
+      )
+      .toBe(false)
+  })
+
+  it('keeps the rejected delete error for the form', async () => {
+    const { store } = makeTestStore()
+
+    await store.dispatch(deleteMachineThunk('machine-99'))
+
+    expect(store.getState().machine.remove.error?._tag).toBe('MachineNotFoundError')
   })
 
   it('prints only the selected machines', async () => {

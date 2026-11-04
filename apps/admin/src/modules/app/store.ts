@@ -1,6 +1,7 @@
 import {
   configureStore,
   createListenerMiddleware,
+  isFulfilled,
   type ThunkDispatch,
   type TypedStartListening,
   type UnknownAction,
@@ -17,7 +18,11 @@ export type RootState = ReturnType<typeof rootReducer>
 export type AppDispatch = ThunkDispatch<RootState, AppExtra, UnknownAction>
 export type AppStartListening = TypedStartListening<RootState, AppDispatch, AppExtra>
 
-export const makeStoreWithDeferredListeners = (extra: AppExtra = makeDemoExtra()) => {
+type StoreOptions = {
+  readonly persist?: () => void
+}
+
+export const makeStoreWithDeferredListeners = (extra: AppExtra = makeDemoExtra(), { persist }: StoreOptions = {}) => {
   const listenerMiddleware = createListenerMiddleware({ extra })
   const startListening = listenerMiddleware.startListening as AppStartListening
 
@@ -32,14 +37,15 @@ export const makeStoreWithDeferredListeners = (extra: AppExtra = makeDemoExtra()
     registerMemberListeners(startListening)
     registerMachineListeners(startListening)
     registerSafetyListeners(startListening)
+    if (persist) startListening({ matcher: isFulfilled, effect: persist })
     return () => listenerMiddleware.clearListeners()
   }
 
   return { store, startListeners }
 }
 
-export const makeStore = (extra: AppExtra = makeDemoExtra()) => {
-  const { store, startListeners } = makeStoreWithDeferredListeners(extra)
+export const makeStore = (extra: AppExtra = makeDemoExtra(), options: StoreOptions = {}) => {
+  const { store, startListeners } = makeStoreWithDeferredListeners(extra, options)
   startListeners()
   return store
 }

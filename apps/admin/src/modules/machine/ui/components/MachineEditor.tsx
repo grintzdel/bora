@@ -18,6 +18,12 @@ type MachineEditorProps = {
   readonly zoneNames: ReadonlyArray<string>
   readonly usages: ReadonlyArray<MachineUsage>
   readonly qr: { readonly value: string; readonly label: string } | null
+  readonly deletion: {
+    readonly isConfirming: boolean
+    readonly isDeleting: boolean
+    readonly warning: string
+    readonly error: string | null
+  } | null
   readonly preview: {
     readonly tag: string
     readonly name: string
@@ -34,6 +40,9 @@ type MachineEditorProps = {
   readonly onSubmit: () => void
   readonly onPrintQr: () => void
   readonly onClose: () => void
+  readonly onAskDelete: () => void
+  readonly onCancelDelete: () => void
+  readonly onConfirmDelete: () => void
 }
 
 const fieldClass = (hasError: boolean) =>
@@ -47,6 +56,33 @@ const FieldError = ({ id, message }: { readonly id: string; readonly message: st
       {message}
     </span>
   ) : null
+
+type DeleteMachineProps = NonNullable<MachineEditorProps['deletion']> &
+  Pick<MachineEditorProps, 'onAskDelete' | 'onCancelDelete' | 'onConfirmDelete'>
+
+const DeleteMachine = (props: DeleteMachineProps) =>
+  props.isConfirming ? (
+    <section aria-label="Supprimer la machine" className="flex flex-col gap-3">
+      <Banner tone="danger" title="Supprimer cette machine ?">
+        {props.warning}
+      </Banner>
+      {props.error ? <Banner tone="danger" title={props.error} /> : null}
+      <div className="flex flex-wrap gap-3">
+        <Button variant="danger" onClick={props.onConfirmDelete} disabled={props.isDeleting}>
+          {props.isDeleting ? 'Suppression…' : 'Oui, supprimer'}
+        </Button>
+        <Button variant="secondary" onClick={props.onCancelDelete} disabled={props.isDeleting}>
+          Annuler
+        </Button>
+      </div>
+    </section>
+  ) : (
+    <div>
+      <Button variant="quiet" iconStart="x" onClick={props.onAskDelete}>
+        Supprimer la machine
+      </Button>
+    </div>
+  )
 
 export const MachineEditor = (props: MachineEditorProps) => {
   const { draft, errors } = props
@@ -216,6 +252,15 @@ export const MachineEditor = (props: MachineEditorProps) => {
           <p className="text-body text-ink-muted m-0">Le QR code apparaît une fois la machine ajoutée.</p>
         )}
       </section>
+
+      {props.deletion ? (
+        <DeleteMachine
+          {...props.deletion}
+          onAskDelete={props.onAskDelete}
+          onCancelDelete={props.onCancelDelete}
+          onConfirmDelete={props.onConfirmDelete}
+        />
+      ) : null}
     </aside>
   )
 }

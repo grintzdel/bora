@@ -13,9 +13,9 @@ export type DemoDatabase = {
 
 const initialState = (): DemoState => structuredClone({ app: demoSeed, space: gymSpaceSeed })
 
-export const makeDemoDatabase = (): DemoDatabase => {
+export const makeDemoDatabase = (saved?: DemoState): DemoDatabase => {
   const db: DemoDatabase = {
-    state: initialState(),
+    state: saved ?? initialState(),
     reset: () => {
       db.state = initialState()
     },

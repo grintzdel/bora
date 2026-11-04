@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { describeMachinesToEquip, formatMachineCaption, formatZoneTitle } from './machine-labels'
+import {
+  describeMachineDeletion,
+  describeMachinesToEquip,
+  formatMachineCaption,
+  formatZoneTitle,
+} from './machine-labels'
 
 const machine = {
   number: '07',
@@ -49,5 +54,19 @@ describe('describeMachinesToEquip', () => {
       title: 'Il reste 2 machines à équiper.',
       details: "Leg curl assis n'a pas encore son QR code et Poulie vis-à-vis attend son tuto.",
     })
+  })
+})
+
+const usage = (programName: string) => ({ programName, exerciseName: 'Tirage vertical', settings: [] })
+
+describe('describeMachineDeletion', () => {
+  it('only mentions the QR code when no program uses the machine', () => {
+    expect(describeMachineDeletion([])).toBe('Son QR code ne mènera plus à aucun tuto.')
+  })
+
+  it('names the programs that lose the machine, once each', () => {
+    expect(describeMachineDeletion([usage('Haut du corps'), usage('Haut du corps'), usage('Bas du corps')])).toBe(
+      "Son QR code ne mènera plus à aucun tuto. Haut du corps et Bas du corps gardent l'exercice, sans machine."
+    )
   })
 })

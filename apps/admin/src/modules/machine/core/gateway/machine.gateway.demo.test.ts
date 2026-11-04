@@ -126,6 +126,36 @@ describe('makeMachineDemoGateway', () => {
     expect(Exit.isFailure(exit)).toBe(true)
   })
 
+  it('deletes a machine, its QR status and its place in the programs', async () => {
+    const db = makeDemoDatabase()
+
+    const deletedId = await Effect.runPromise(makeMachineDemoGateway(db, options).delete('machine-07'))
+
+    expect(deletedId).toBe('machine-07')
+    expect(db.state.app.machines.some((machine) => machine.id === 'machine-07')).toBe(false)
+    expect(db.state.space.machineStatus['machine-07']).toBeUndefined()
+    expect(db.state.app.programs[0]?.exercises.find((exercise) => exercise.name === 'Tirage vertical')).toMatchObject({
+      machineId: null,
+    })
+  })
+
+  it('keeps the exercises of a deleted machine in the programs, without a machine number', async () => {
+    const gateway = makeMachineDemoGateway(makeDemoDatabase(), options)
+
+    await Effect.runPromise(gateway.delete('machine-07'))
+    const overview = await Effect.runPromise(gateway.list())
+
+    expect(overview.programs[0]?.exercises).toContainEqual({ name: 'Tirage vertical', machineNumber: null })
+    expect(overview.zones.flatMap((zone) => zone.machines)).toHaveLength(8)
+  })
+
+  it('refuses to delete a machine that does not exist', async () => {
+    const exit = await Effect.runPromiseExit(makeMachineDemoGateway(makeDemoDatabase(), options).delete('machine-99'))
+
+    expect(Exit.isFailure(exit)).toBe(true)
+    expect(JSON.stringify(exit)).toContain('MachineNotFoundError')
+  })
+
   it('builds the QR sheet for the selected machines only', async () => {
     const gateway = makeMachineDemoGateway(makeDemoDatabase(), options)
 

@@ -2,16 +2,23 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 import { type AsyncState, failed, idle, loaded, loading } from '../../../shared/store/async-state'
 import type { Machine, MachinesOverview, QrSheet } from '../domain/machine.domain-model'
-import { fetchMachinesThunk, fetchQrSheetThunk, saveMachineThunk } from './machine.thunks'
+import { deleteMachineThunk, fetchMachinesThunk, fetchQrSheetThunk, saveMachineThunk } from './machine.thunks'
 
 type MachineState = {
   readonly overview: AsyncState<MachinesOverview>
   readonly save: AsyncState<Machine>
+  readonly remove: AsyncState<string>
   readonly qrSheet: AsyncState<QrSheet>
   readonly qrSheetSelection: ReadonlyArray<string> | null
 }
 
-const initialState: MachineState = { overview: idle(), save: idle(), qrSheet: idle(), qrSheetSelection: null }
+const initialState: MachineState = {
+  overview: idle(),
+  save: idle(),
+  remove: idle(),
+  qrSheet: idle(),
+  qrSheetSelection: null,
+}
 
 export const machineSlice = createSlice({
   name: 'machine',
@@ -21,7 +28,7 @@ export const machineSlice = createSlice({
       ...state,
       qrSheetSelection: payload,
     }),
-    saveCleared: (state) => ({ ...state, save: idle<Machine>() }),
+    saveCleared: (state) => ({ ...state, save: idle<Machine>(), remove: idle<string>() }),
   },
   extraReducers: (builder) => {
     builder
@@ -34,6 +41,12 @@ export const machineSlice = createSlice({
       .addCase(saveMachineThunk.pending, (state) => ({ ...state, save: loading(idle<Machine>()) }))
       .addCase(saveMachineThunk.fulfilled, (state, { payload }) => ({ ...state, save: loaded(payload) }))
       .addCase(saveMachineThunk.rejected, (state, { payload }) => ({ ...state, save: failed(state.save, payload) }))
+      .addCase(deleteMachineThunk.pending, (state) => ({ ...state, remove: loading(idle<string>()) }))
+      .addCase(deleteMachineThunk.fulfilled, (state, { payload }) => ({ ...state, remove: loaded(payload) }))
+      .addCase(deleteMachineThunk.rejected, (state, { payload }) => ({
+        ...state,
+        remove: failed(state.remove, payload),
+      }))
       .addCase(fetchQrSheetThunk.pending, (state) => ({ ...state, qrSheet: loading(state.qrSheet) }))
       .addCase(fetchQrSheetThunk.fulfilled, (state, { payload }) => ({ ...state, qrSheet: loaded(payload) }))
       .addCase(fetchQrSheetThunk.rejected, (state, { payload }) => ({

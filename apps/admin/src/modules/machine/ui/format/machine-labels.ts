@@ -55,6 +55,13 @@ export const describeMachinesToEquip = (
   }
 }
 
+export const describeMachineDeletion = (usages: ReadonlyArray<{ readonly programName: string }>) => {
+  const programs = [...new Set(usages.map((usage) => usage.programName))]
+  const qr = 'Son QR code ne mènera plus à aucun tuto.'
+  if (programs.length === 0) return qr
+  return `${qr} ${joinFrench(programs)} ${programs.length > 1 ? 'gardent' : 'garde'} l'exercice, sans machine.`
+}
+
 const LevelLabel: Record<Level, string> = {
   beginner: 'Niveau débutant',
   returning: 'Reprise en douceur',
